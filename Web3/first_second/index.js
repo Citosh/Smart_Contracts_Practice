@@ -14,7 +14,7 @@ function getBalance(address) {
 
 // getBalance(process.env.FIRST_ACCOUNT_ADDRESS)
 //     .then(balance => {
-//         console.log(balance)
+//         console.log(web3.utils.fromWei(balance,'ether'))
 //     })
 //     .catch(errors => {
 //         console.log(errors)
@@ -26,20 +26,23 @@ async function sendTransactionACCOUNT(from, to, value) {
         from,
         to,
         maxPriorityFeePerGas: 10_000,
-        maxFeePerGas: 329980700100,
+        maxFeePerGas: 32998070010,
         value: web3.utils.toWei(value, 'ether'),
     }
 
-    return account.signTransaction(txObject)
+    
+   // const signedTx = await account.signTransaction(txObject)
+
+    return web3.eth.sendTransaction(txObject)
 }
 
-// sendTransactionACCOUNT(account.address, process.env.SECOND_ACCOUNT_ADDRESS,'0.001')
-//     .then(receipt => {
-//         console.log(receipt)
-//     })
-//     .catch(errors => {
-//         console.log(errors)
-//     })
+sendTransactionACCOUNT(account.address, process.env.SECOND_ACCOUNT_ADDRESS,'0.001')
+    .then(receipt => {
+        console.log(receipt)
+    })
+    .catch(errors => {
+        console.log(errors)
+    })
 
 
 
@@ -53,10 +56,10 @@ async function sendTransactionWALLET(from, to, value){
     return web3.eth.sendTransaction(txObject)
 }
 
-sendTransactionWALLET(wallet[0].address, process.env.SECOND_ACCOUNT_ADDRESS, '0.001')
-    .then(receipt => {
-        console.log(receipt)
-    })
-    .catch(errors => {
-        console.log(errors)
-    })
+// sendTransactionWALLET(wallet[0].address, process.env.SECOND_ACCOUNT_ADDRESS, '0.001')
+//     .then(receipt => {
+//         console.log(receipt)
+//     })
+//     .catch(errors => {
+//         console.log(errors)
+//     })

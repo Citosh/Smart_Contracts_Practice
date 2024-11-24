@@ -1,0 +1,4 @@
+node_modules/
+.env
+MyToken_ABI.json
+MyToken_Address.txt
