@@ -19,25 +19,25 @@ async function distributeTokens(recipients) {
 
     for (const recipient of recipients) {
         const { address, amount } = recipient;
-        const data = tokenContract.methods.transfer(address, web3.utils.toWei(amount, 'ether')).encodeABI();
 
-        const gasEstimate = await web3.eth.estimateGas({
-          from: account.address,
-          to: address,
-          data: data,
-        });
 
-        const tx = {
+        const gasEstimate = await tokenContract.methods
+        .transfer(address, web3.utils.toWei(amount, 'ether'))
+        .estimateGas({
             from: account.address,
-            to: contractAddress,
-            maxPriorityFeePerGas: web3.utils.toWei('2', 'gwei'),
-            maxFeePerGas: gasPrice + BigInt(web3.utils.toWei('2', 'gwei')), 
-            gas: gasEstimate * 2n,
-            data,
-        };
+        });
+       
 
         try {
-            const receipt = await web3.eth.sendTransaction(tx);
+            const receipt = await tokenContract.methods.transfer(address, web3.utils.toWei(amount, 'ether')).
+            send({
+                from: account.address,
+                to: contractAddress,
+                maxPriorityFeePerGas: web3.utils.toWei('2', 'gwei'),
+                maxFeePerGas: gasPrice + BigInt(web3.utils.toWei('2', 'gwei')),
+                gas: gasEstimate,
+            });
+
             console.log(`Успішно нараховано ${amount} токенів на адресу ${address}`);
             console.log(receipt);
         } catch (error) {
@@ -66,10 +66,14 @@ async function getTokenBalances(addresses) {
     }
 }
 
+
+
 const addresses = [
     process.env.SECOND_ACCOUNT_ADDRESS,
     process.env.THIRD_ACCOUNT_ADDRESS
 ];
+
+getTokenBalances(addresses)
 
 distributeTokens(recipients)
     .then( ()=> getTokenBalances(addresses))
